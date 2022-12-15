@@ -4,18 +4,36 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"unicode"
 )
 
 var pl = fmt.Println
 var phonebook = make(map[string]string)
 
-func insertNewUser(username string, phonenumber string) {
-	// If the key exists
-	if _, ok := phonebook[username]; ok {
-		pl("user already excised... \n")
-	} else {
-		pl("New user will be added to the phonebook \n")
-		phonebook[username] = phonenumber
+func insertNewUser() {
+	pl("please inset the name and phone number for the user")
+	var Newusername string
+	inputReader := bufio.NewReader(os.Stdin)
+	Newusername, _ = inputReader.ReadString('\n')
+	if len([]rune(Newusername)) >= 3 {
+		pl("now enter the phone number")
+		var Newphonenumber string
+		inputReader := bufio.NewReader(os.Stdin)
+		Newphonenumber, _ = inputReader.ReadString('\n')
+		if len([]rune(Newphonenumber)) < 10 {
+			pl("the phone you entered is too short..")
+		} else {
+			// If the key exists
+			if _, ok := phonebook[Newusername]; ok {
+				pl("user already excised... \n")
+			} else {
+				pl("New user will be added to the phonebook \n")
+				nameWithCapitalLetter := []rune(Newusername)
+				nameWithCapitalLetter[0] = unicode.ToUpper(nameWithCapitalLetter[0])
+				s := string(nameWithCapitalLetter)
+				phonebook[s] = Newphonenumber
+			}
+		}
 	}
 
 }
@@ -58,21 +76,13 @@ func main() {
 	for {
 		pl("press 1 for : insert new user \npress 2 for : check user by name \npress 3 for : check user by phone number\npress 4 for : delete user from phonebook \npress 5 for : print the phone book")
 		var task int
-		fmt.Scan(&task)
+		fmt.Scanf("%d", &task)
 		switch task {
 		case 1: //insert new user
 			{
-				pl("please inset the name and phone number for the user")
-				reader := bufio.NewReader(os.Stdin)
-				NewUserName, err := reader.ReadString('\n')
-				if err == nil {
-					reader := bufio.NewReader(os.Stdin)
-					NewPhoneNumber, err := reader.ReadString('\n')
-					if err == nil {
-						insertNewUser(NewUserName, NewPhoneNumber)
-					}
-				}
+				insertNewUser()
 			}
+
 		case 2:
 			{
 				pl("please inset the name and to check")
@@ -106,14 +116,4 @@ func main() {
 		}
 	}
 
-	/*insertNewUser("Abc", "0543156781")
-	printPhoneBook()
-	checkViaUserName("Abc")
-	checkViaPhoneNumber("0543156781")
-	deleteUserFromPhoneBook("Abc")
-	printPhoneBook()*/
 }
-
-/*
--first letter to upper?!
-*/
